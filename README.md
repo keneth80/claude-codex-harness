@@ -1,4 +1,4 @@
-# design-harness — 설계 전용 Claude 하네스 (Codex 구현 연동)
+# claude codex design-harness — 설계 전용 Claude 하네스 (Codex 구현 연동)
 
 **Claude(Opus)는 설계만, 구현은 Codex CLI가** 하는 분업 워크플로우용 하네스입니다.
 Claude는 인터뷰로 요구사항을 모으고, 매뉴얼로 규칙을 문서화하고, 그 규칙을
