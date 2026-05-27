@@ -1,0 +1,60 @@
+{
+  "_comment": "설계 전용 하네스. Claude는 인터뷰→매뉴얼→AGENTS.md export까지만 담당. 구현/테스트 단계 훅(code_reviewer 등)은 제외했습니다. drift_guard는 Codex가 짠 코드를 Claude 세션에서 열 때 매뉴얼과의 어긋남을 사후 감시합니다.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/security_gate.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/drift_guard.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/verify_guard.py",
+            "timeout": 130
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/codemap_session.py",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/codemap_refresh.py",
+            "timeout": 70
+          }
+        ]
+      }
+    ]
+  }
+}
